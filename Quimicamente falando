@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quimicamente Falando</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#07111f;color:#fff}
+header{text-align:center;padding:22px;background:#102b45}
+header h1{margin:0;font-size:28px}
+nav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;padding:12px;background:#0b1d30}
+button,select{border:0;border-radius:10px;padding:12px;font-weight:bold}
+button{background:#39d6ad;color:#06251e}
+main{max-width:900px;margin:auto;padding:15px}
+.card{background:#102b45;border-radius:18px;padding:18px;margin-bottom:15px}
+.hidden{display:none}
+.stage{min-height:260px;background:#06101b;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;margin-top:15px;overflow:hidden}
+select{width:100%;margin:10px 0}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.flask{position:relative;width:140px;height:170px;border:5px solid #cde5ef;border-top:0;border-radius:15px 15px 60px 60px;margin:20px}
+.liquid{position:absolute;bottom:0;left:0;width:100%;height:55%;background:#805cff;border-radius:0 0 55px 55px}
+.foam{position:absolute;left:-25px;right:-25px;bottom:48%;height:65px;background:white;border-radius:50%;box-shadow:0 -15px 0 5px #fff;animation:foam .7s infinite alternate}
+@keyframes foam{to{transform:scale(1.12) translateY(-12px)}}
+.balloon{font-size:120px;animation:inflate 1s infinite alternate}
+@keyframes inflate{to{transform:scale(1.2)}}
+.big{font-size:100px}
+.timeline div{border-left:4px solid #39d6ad;padding:10px;margin:10px}
+.quiz button{margin:5px}
+</style>
+</head>
+
+<body>
+<header>
+<h1>🧪 Quimicamente Falando</h1>
+<p>Descubra a química brincando!</p>
+</header>
+
+<nav>
+<button onclick="show('experimentos')">🧪 Experimentos</button>
+<button onclick="show('curie')">👩‍🔬 Marie Curie</button>
+<button onclick="show('quiz')">📝 Quiz</button>
+</nav>
+
+<main>
+
+<section id="experimentos" class="card">
+<h2>🧪 Laboratório</h2>
+
+<select id="exp">
+<option>Vinagre + bicarbonato + detergente</option>
+<option>Balão que infla</option>
+<option>Leite colorido</option>
+<option>Ovo flutuante</option>
+<option>Indicador de repolho roxo</option>
+<option>CO₂ e combustão</option>
+<option>Ferrugem</option>
+<option>Cristais de sal</option>
+<option>Torre de densidades</option>
+<option>Açúcar dissolvendo</option>
+</select>
+
+<div class="actions">
+<button onclick="experiment()">REALIZAR EXPERIMENTO</button>
+<button onclick="resetExp()">REINICIAR</button>
+</div>
+
+<div id="stage" class="stage">
+<p>Escolha um experimento e clique em realizar.</p>
+</div>
+
+<p id="explanation"></p>
+</section>
+
+<section id="curie" class="card hidden">
+<h2>👩‍🔬 Marie Curie</h2>
+
+<p>
+Marie Curie foi uma cientista pioneira nos estudos da radioatividade.
+Nasceu em 1867, na Polônia, e desenvolveu grande parte de sua carreira
+científica na França.
+</p>
+
+<div class="timeline">
+<div><b>1867</b> — nascimento de Marie Curie.</div>
+<div><b>1903</b> — recebeu o Nobel de Física.</div>
+<div><b>1911</b> — recebeu o Nobel de Química.</div>
+</div>
+</section>
+
+<section id="quiz" class="card hidden quiz">
+<h2>📝 Quiz — Marie Curie</h2>
+<div id="question"></div>
+<div id="answers"></div>
+<h3 id="result"></h3>
+</section>
+
+</main>
+
+<script>
+function show(id){
+document.getElementById("experimentos").classList.add("hidden");
+document.getElementById("curie").classList.add("hidden");
+document.getElementById("quiz").classList.add("hidden");
+document.getElementById(id).classList.remove("hidden");
+}
+
+function resetExp(){
+document.getElementById("stage").innerHTML="<p>🧪 Pronto para experimentar!</p>";
+document.getElementById("explanation").innerHTML="";
+}
+
+function experiment(){
+let i=document.getElementById("exp").selectedIndex;
+let s=document.getElementById("stage");
+let e=document.getElementById("explanation");
+
+if(i==0){
+s.innerHTML='<div class="flask"><div class="liquid"></div><div class="foam"></div></div><h2>🫧 Espuma transbordando!</h2>';
+e.innerHTML="O vinagre reage com o bicarbonato e libera dióxido de carbono (CO₂). O detergente prende as bolhas e forma a espuma.";
+}
+else if(i==1){
+s.innerHTML='<div class="balloon">🎈</div><h2>O balão está enchendo!</h2>';
+e.innerHTML="O gás produzido pela reação ocupa espaço e faz o balão aumentar.";
+}
+else{
+let icons=["🥛","🥚","🟣","🕯️","🔩","💎","🧴","🍬"];
+s.innerHTML='<div class="big">'+icons[i-2]+'</div><h2>Experimento realizado!</h2>';
+e.innerHTML="Observe o fenômeno e explique o que aconteceu durante a apresentação.";
+}
+}
+
+const questions=[
+["Em que ano Marie Curie nasceu?",["1867","1903","1911"],0],
+["Qual área está ligada aos seus estudos?",["Radioatividade","Astronomia","Geografia"],0],
+["Em que ano recebeu o Nobel de Química?",["1911","1903","1920"],0],
+["Onde Marie Curie nasceu?",["Polônia","Brasil","Itália"],0],
+["Quantos Prêmios Nobel Marie Curie recebeu?",["Dois","Um","Quatro"],0]
+];
+
+let q=0,score=0;
+
+function loadQuiz(){
+let x=questions[q];
+document.getElementById("question").innerHTML="<h3>"+x[0]+"</h3>";
+let a="";
+x[1].forEach((v,i)=>{
+a+='<button onclick="answer('+i+')">'+v+'</button>';
+});
+document.getElementById("answers").innerHTML=a;
+document.getElementById("result").innerHTML="Pontuação: "+score;
+}
+
+function answer(i){
+if(i==questions[q][2])score++;
+q++;
+if(q<questions.length){
+loadQuiz();
+}else{
+document.getElementById("question").innerHTML="<h2>🎉 Quiz terminado!</h2>";
+document.getElementById("answers").innerHTML="";
+document.getElementById("result").innerHTML="Você fez "+score+" de "+questions.length+" pontos!";
+}
+}
+
+loadQuiz();
+</script>
+</body>
+</html>
